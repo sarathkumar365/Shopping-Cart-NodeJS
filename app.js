@@ -4,9 +4,13 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const hbs = require('express-handlebars');
+var fileUpload = require('express-fileupload')
+var db = require('./config/connection')
+var session = require('express-session')
 
-var indexRouter = require('./routes/index');
+var adminRouter = require('./routes/admin');
 var usersRouter = require('./routes/users');
+const e = require('express');
 
 var app = express();
 
@@ -20,9 +24,18 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(fileUpload())
+app.use(session({secret:"key",cookie:{maxAge:600000}}))
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+db.connect((err) => {
+  if(err){
+    console.log('DATABASE CONNECTION ERROR' + err);
+  } else{
+    console.log('DATABASE CONNECTED TO PORT 27017');
+  }
+})
+app.use('/', usersRouter);
+app.use('/admin', adminRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
