@@ -178,7 +178,7 @@ module.exports = {
             }
           )
           .then((response) => {
-            resolve(true);
+            resolve({status:true});
           });
       }
     });

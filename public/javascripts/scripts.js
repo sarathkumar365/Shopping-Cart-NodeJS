@@ -1,3 +1,5 @@
+const { response } = require("express");
+
     function addToCart(id){
     $.ajax({
       url:'/add-to-cart/'+id,
@@ -17,7 +19,7 @@
     })
   }
 
-  function changeQuantity(cartID,proID,count) {
+  function changeQuantity(cartID,proID,userID,count) {
     // console.log("done");
     let quantity = parseInt(document.getElementById(proID).innerHTML)
     count =parseInt(count)
@@ -25,7 +27,7 @@
     $.ajax({
       url:'/change-product-quantity',
       data:{
-        cart:cartID,product:proID,count,quantity:quantity
+        cart:cartID,product:proID,count,quantity:quantity,user:userID
       },
       method:'post',
       success:(response) =>{
@@ -34,6 +36,8 @@
           location.reload()
         } else {
           document.getElementById(proID).innerHTML=quantity+count
+          // location.reload()
+          document.getElementById('total').innerHTML=response.total
         }
       }
     })
@@ -56,3 +60,4 @@
       }
     })
   }
+

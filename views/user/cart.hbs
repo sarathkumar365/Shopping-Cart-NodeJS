@@ -21,10 +21,10 @@
                     <td>{{this.product.price}}</td>
                     <td>
                         <button class="cart-item-count mr-3"
-                            onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)">-</button><span
+                            onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',-1)">-</button><span
                             id="{{this.product._id}}">
                             {{this.quantity}}</span> <button class="cart-item-count ml-3"
-                            onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1)">+</button>
+                            onclick="changeQuantity('{{this._id}}','{{this.product._id}}','{{../user._id}}',1)">+</button>
                     </td>
                     <td>
                         <button onclick="remove('{{this._id}}','{{this.product._id}}')"
@@ -36,7 +36,7 @@
         </table>
         <hr>
         <div class="float-right pr-5">
-            <h2 class="float-end">Total Price : Rs.1000</h2>
+            <h2 class="float-end">Total Price : Rs.<span id="total">{{total}}</span></h2>
             <a href="/place-order" class="mt-3 btn btn-success mt-3" style="width: 100%;"><b>Place Order</b> </a>
         </div>
     </div>
