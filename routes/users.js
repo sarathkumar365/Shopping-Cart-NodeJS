@@ -3,7 +3,8 @@ var express = require('express');
 var router = express.Router();
 var productHelper = require('../helpers/product-helpers');
 const { route } = require('./admin');
-const userHelpers =  require('../helpers/user-helpers')
+const userHelpers =  require('../helpers/user-helpers');
+const { Logger } = require('mongodb');
 
 const verifyLogin = (req,res,next) => {
   if(req.session.loggedIn){
@@ -105,14 +106,16 @@ router.get('/place-order',verifyLogin,async(req,res)=> {
 
 router.post('/place-order',async(req,res) => {
   let products =await userHelpers.getCartProductList(req.body.userID)
+  // console.log(req.body.userID);
   let totalPrice =await userHelpers.getTotalAmount(req.body.userID)
+  console.log("total "+totalPrice);
   userHelpers.placeOrder(req.body,products,totalPrice).then((response) => {
   res.json({status:true})
   })
-  console.log(req.body);
+  // console.log(req.body);
 })
 
-router.get('/place-order',(req,res) => {
+router.get('/order-placed',(req,res) => {
   res.render('user/order-placed',{user:req.session.user})
 })
 

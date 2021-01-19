@@ -69,7 +69,7 @@
       data:$('#checkout-form').serialize(),
       success:(response) =>{
         if(response.status){
-          location.href='/place-order'
+          location.href='/order-placed'
         }
       }
     })
