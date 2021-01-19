@@ -103,8 +103,17 @@ router.get('/place-order',verifyLogin,async(req,res)=> {
   res.render('user/place-order',{total,user:req.session.user})
 })
 
-router.post('/place-order',(req,res) => {
+router.post('/place-order',async(req,res) => {
+  let products =await userHelpers.getCartProductList(req.body.userID)
+  let totalPrice =await userHelpers.getTotalAmount(req.body.userID)
+  userHelpers.placeOrder(req.body,products,totalPrice).then((response) => {
+  res.json({status:true})
+  })
   console.log(req.body);
+})
+
+router.get('/place-order',(req,res) => {
+  res.render('user/order-placed',{user:req.session.user})
 })
 
 

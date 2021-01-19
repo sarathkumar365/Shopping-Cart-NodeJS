@@ -1,4 +1,4 @@
-const { response } = require("express");
+
 
     function addToCart(id){
     $.ajax({
@@ -68,7 +68,9 @@ const { response } = require("express");
       method:'post',
       data:$('#checkout-form').serialize(),
       success:(response) =>{
-        alert(response)
+        if(response.status){
+          location.href='/place-order'
+        }
       }
     })
   })
