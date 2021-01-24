@@ -3,7 +3,8 @@ var express = require('express');
 var router = express.Router();
 var productHelper = require('../helpers/product-helpers');
 const { route } = require('./admin');
-const userHelpers =  require('../helpers/user-helpers')
+const userHelpers =  require('../helpers/user-helpers');
+const { Logger } = require('mongodb');
 
 const verifyLogin = (req,res,next) => {
   if(req.session.loggedIn){
@@ -105,16 +106,41 @@ router.get('/place-order',verifyLogin,async(req,res)=> {
 
 router.post('/place-order',async(req,res) => {
   let products =await userHelpers.getCartProductList(req.body.userID)
+  // console.log(req.body.userID);
   let totalPrice =await userHelpers.getTotalAmount(req.body.userID)
-  userHelpers.placeOrder(req.body,products,totalPrice).then((response) => {
-  res.json({status:true})
+  // console.log("total "+totalPrice);
+  userHelpers.placeOrder(req.body,products,totalPrice).then((orderID) => {
+    if(req.body['payment-method']==='COD'){
+      res.json({codSuccess:true})
+    } else {
+      userHelpers.generateRazorpay(orderID,totalPrice).then((response) =>{
+        res.json(response)
+      })
+    }
   })
-  console.log(req.body);
+  // console.log(req.body);
 })
 
-router.get('/place-order',(req,res) => {
+router.get('/order-placed',(req,res) => {
   res.render('user/order-placed',{user:req.session.user})
 })
 
+router.get('/orders',async(req,res) => {
+  let orders = await userHelpers.getUserOrders(req.query.id)
+  // console.log(orders)
+  res.render('user/orders',{user:req.session.user,orders})
+})
+
+
+router.get('/view-order-products/:id',async(req,res) => {
+  let productDetail = await userHelpers.getOrderProducts(req.params.id)
+  // console.log(productDetail);
+  res.render('user/view-ordered-products',{productDetail,user:req.session.user})
+})
+
+
+router.post('/verify-payment',(req,res) => {
+  console.log(req.body);
+})
 
 module.exports = router;
