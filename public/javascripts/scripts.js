@@ -1,3 +1,5 @@
+
+
 function addToCart(id) {
   $.ajax({
     url: "/add-to-cart/" + id,
@@ -69,9 +71,16 @@ function verifyPayment(payment, order) {
     url: "/verify-payment",
     data: {
       payment,
-      order
+      order,
     },
-    method: 'post',
+    method: "post",
+    success: (response) => {
+      if (response.status) {
+        location.href = "/order-placed";
+      } else {
+        alert('payment failed')
+      }
+    },
   });
 }
 
@@ -85,9 +94,9 @@ function razorPayPayment(order) {
     image: "https://example.com/your_logo",
     order_id: order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
     handler: function (response) {
-      alert(response.razorpay_payment_id);
-      alert(response.razorpay_order_id);
-      alert(response.razorpay_signature);
+      // alert(response.razorpay_payment_id);
+      // alert(response.razorpay_order_id);
+      // alert(response.razorpay_signature);
 
       verifyPayment(response, order);
     },
@@ -110,7 +119,7 @@ function razorPayPayment(order) {
 $("#checkout-form").submit((e) => {
   e.preventDefault();
   $.ajax({
-    url: "/place-order",
+    url: "/place-ordered",
     method: "post",
     data: $("#checkout-form").serialize(),
     success: (response) => {
